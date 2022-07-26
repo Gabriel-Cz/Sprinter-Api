@@ -1,0 +1,75 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Goal {
+  id          String    @id @db.VarChar
+  description String?   @db.VarChar
+  name        String    @db.VarChar
+  createdAt   DateTime? @default(now()) @db.Timestamp(6)
+  Task        Task      @relation(fields: [id], references: [goalId], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model Phone {
+  id        String    @id @db.VarChar
+  number    String    @db.VarChar
+  phoneType PhoneType
+  createdAt DateTime? @default(now()) @db.Timestamp(6)
+  Profile   Profile   @relation(fields: [id], references: [phoneId], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model Profile {
+  id          String    @id @db.VarChar
+  userId      String?   @unique @db.VarChar
+  phoneId     String?   @unique @db.VarChar
+  first_name  String    @db.VarChar
+  second_name String    @db.VarChar
+  createdAt   DateTime? @default(now()) @db.Timestamp(6)
+  Phone       Phone?
+  User        User?
+}
+
+model Task {
+  id          String    @id @db.VarChar
+  goalId      String?   @unique @db.VarChar
+  assigneeId  String?   @unique @db.VarChar
+  name        String    @db.VarChar
+  description String?   @db.VarChar
+  type        TaskType
+  createdAt   DateTime? @default(now()) @db.Timestamp(6)
+  Goal        Goal?
+  User        User?
+}
+
+model User {
+  id        String    @id @db.VarChar
+  email     String    @unique @db.VarChar
+  password  String    @db.VarChar
+  role      UserRole?
+  createdAt DateTime? @default(now()) @db.Timestamp(6)
+  Profile   Profile   @relation(fields: [id], references: [userId], onDelete: NoAction, onUpdate: NoAction)
+  Task      Task      @relation(fields: [id], references: [assigneeId], onDelete: NoAction, onUpdate: NoAction, map: "User_id_fkey1")
+}
+
+enum PhoneType {
+  HOME
+  MOBILE
+  OFFICE
+}
+
+enum TaskType {
+  URGENT
+  MEDIUM
+  LOW
+}
+
+enum UserRole {
+  ADMIN
+  CLIENT
+  GUEST
+}
