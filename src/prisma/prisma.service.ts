@@ -2,7 +2,8 @@ import { INestApplication, Injectable, OnModuleInit } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 
 @Injectable()
-export class PrismaService extends PrismaClient implements OnModuleInit {
+export class PrismaService extends PrismaClient
+implements OnModuleInit {
   constructor() {
     super({
       log: [
@@ -29,14 +30,8 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
   async onModuleInit() {
     await this.$connect();
     if (process.env.DEVELOPMENT) {
-      this.$on('info', (event: any) => {
-        console.log(`${event.info}`);
-      });
-      this.$on('warn', (event: any) => {
-        console.log(`${event.warn}`);
-      });
-      this.$on('error', (event: any) => {
-        console.log(`${event.error}`);
+      this.$on('beforeExit', (event: any) => {
+        console.log(`${event}`);
       });
     }
   }
