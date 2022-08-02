@@ -12,7 +12,7 @@ model Goal {
   description String?   @db.VarChar
   name        String    @db.VarChar
   createdAt   DateTime? @default(now()) @db.Timestamp(6)
-  Task        Task      @relation(fields: [id], references: [goalId], onDelete: NoAction, onUpdate: NoAction)
+  Task        Task?      @relation(fields: [id], references: [goalId], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model Phone {
@@ -20,7 +20,7 @@ model Phone {
   number    String    @db.VarChar
   phoneType PhoneType
   createdAt DateTime? @default(now()) @db.Timestamp(6)
-  Profile   Profile   @relation(fields: [id], references: [phoneId], onDelete: NoAction, onUpdate: NoAction)
+  Profile   Profile?   @relation(fields: [id], references: [phoneId], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model Profile {
@@ -47,13 +47,15 @@ model Task {
 }
 
 model User {
-  id        String    @id @db.VarChar
-  email     String    @unique @db.VarChar
-  password  String    @db.VarChar
-  role      UserRole?
-  createdAt DateTime? @default(now()) @db.Timestamp(6)
-  Profile   Profile   @relation(fields: [id], references: [userId], onDelete: NoAction, onUpdate: NoAction)
-  Task      Task      @relation(fields: [id], references: [assigneeId], onDelete: NoAction, onUpdate: NoAction, map: "User_id_fkey1")
+  id           String    @id @db.VarChar
+  email        String    @unique @db.VarChar
+  username     String    @unique @db.VarChar
+  password     String    @db.VarChar
+  role         UserRole?
+  lastLoggedIn DateTime? @default(now()) @db.Timestamp(6)
+  createdAt    DateTime? @default(now()) @db.Timestamp(6)
+  Profile      Profile?   @relation(fields: [id], references: [userId], onDelete: NoAction, onUpdate: NoAction)
+  Task         Task?      @relation(fields: [id], references: [assigneeId], onDelete: NoAction, onUpdate: NoAction, map: "User_id_fkey1")
 }
 
 enum PhoneType {
